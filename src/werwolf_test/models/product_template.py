@@ -12,6 +12,11 @@ class ProductTemplate(models.Model):
     manufacturer_id = fields.Many2one('product.manufacturer', string='Manufacturer')
     model_id = fields.Many2one('product.model', string='Model')
 
+    @api.onchange('manufacturer_id')
+    def onchange_manufacturer_id(self):
+        for rec in self:
+            return {'domain': {'model_id': [('manufacturer_id', '=', rec.manufacturer_id.id)]}}
+
 
 class ProductManufacturer(models.Model): 
     _name = 'product.manufacturer'
@@ -25,4 +30,7 @@ class ProductModel(models.Model):
     name = fields.Char(string='Name', required=True)
     manufacturer_id = fields.Many2one('product.manufacturer', string='Manufacturer')
     product_template_id = fields.One2many('product.template', "model_id", string="Product")
+
+
+
 
